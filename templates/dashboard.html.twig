@@ -12,6 +12,15 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+        <div>
+            <h2>Przeglądaj quizy</h2>
+            <a href='/quizes'>Zobacz!</a>
+        </div>
+        <div>
+            <h2>Stwórz swój własny quiz</h2>
+            <a href='/create/quiz'>Stwórz!</a>
+        </div>
+        {% endblock %}
     </body>
 </html>
