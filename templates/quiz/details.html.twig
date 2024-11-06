@@ -1,11 +1,13 @@
 <h1>Sczegóły quizu</h1>
+<a href="/quizes">Wróć do listy</a>
 {% if quiz %}
 
 <div>
     <h3>{{quiz.name}}</h3>
     <p>{{quiz.description}}</p>
 
-    <button> Rozpocznij quiz </button>
+    <a href="/quiz/question/{{quiz.id}}">Przejdź do quizu</a>
+    
 </div>
 
 {% endif %}
