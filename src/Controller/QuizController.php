@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Question;
 use App\Entity\Quiz;
 use App\Form\Type\QuizType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,9 @@ class QuizController extends AbstractController
             $entityManager->persist($quiz);
             $entityManager->flush();
 
-            return new Response('Saved new quiz with name: ' . $quiz->getName());
+            return $this->redirectToRoute('create_question', [
+                'quizId' => $quiz->getId(),
+            ]);
         }
 
         return $this->render('/quiz/create.html.twig', [

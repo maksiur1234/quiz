@@ -1,0 +1,20 @@
+<a href="/">Wróć do strony głównej</a>
+{{ form_start(form) }}
+<button class="add-question-btn">Dodaj pytanie</button>
+
+<div class="questions">
+
+</div>
+{{ form_end(form) }}
+<script>
+const button = document.querySelector(".add-question-btn");
+const div = document.querySelector(".questions");
+
+button.addEventListener("click", () => {
+    const input = document.createElement("textarea")
+    input.type = "text"
+    input.placeholder = "Question contnet"
+    
+    div.appendChild(input)
+})
+</script>
