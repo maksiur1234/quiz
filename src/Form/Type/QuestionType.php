@@ -1,7 +1,7 @@
 <?php
 namespace App\Form\Type;
 
-use App\Entity\Question;
+use App\Entity\Question\Question;
 use App\Entity\Quiz;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

@@ -4,11 +4,11 @@
 {% for quiz in quizes %}
 
 <div>
-    <a href="/details/quiz/{{quiz.id}}">
+    <a href="/quiz/details/{{quiz.id}}">
         <h2>{{quiz.name}}</h2>
         <p>{{quiz.description}}</p>
-        <a href="/delete/quiz/{{quiz.id}}">Usuń quiz</a>
-        <a href="/update/quiz/{{quiz.id}}">Edytuj quiz</a>
+        <a href="/quiz/delete/{{quiz.id}}">Usuń quiz</a>
+        <a href="/quiz/update/{{quiz.id}}">Edytuj quiz</a>
     </a>
 </div>
 

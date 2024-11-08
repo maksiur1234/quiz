@@ -9,7 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/quiz', name: 'quiz_')]
+#[IsGranted('ROLE_USER')]
 class QuizController extends AbstractController
 {
     private QuizRepository $quizRepository;
@@ -19,7 +22,7 @@ class QuizController extends AbstractController
         $this->quizRepository = $quizRepository;
     }
 
-    #[Route('/quizes', name: 'list_quiz')]
+    #[Route('/', name: 'quiz_list')]
     public function index(): Response
     {
         $quizes = $this->quizRepository->findAllQuizes();
@@ -27,7 +30,7 @@ class QuizController extends AbstractController
         return $this->render('quiz/index.html.twig', ['quizes' => $quizes]);
     }
 
-    #[Route('/details/quiz/{id}', name: 'details_quiz')]
+    #[Route('/details/{id}', name: 'details_quiz')]
     public function show(int $id): Response
     {
         $quiz = $this->quizRepository->findQuizById($id);
@@ -41,7 +44,7 @@ class QuizController extends AbstractController
         return $this->render('quiz/details.html.twig', ['quiz' => $quiz]);
     }
 
-    #[Route('/create/quiz', name: 'create_quiz')]
+    #[Route('/create', name: 'create_quiz')]
     public function create(Request $request): Response
     {
         $quiz = new Quiz;
@@ -53,7 +56,7 @@ class QuizController extends AbstractController
 
             $this->quizRepository->saveQuiz($quiz);
 
-            return $this->redirectToRoute('create_question', [
+            return $this->redirectToRoute('question_create_question', [
                 'quizId' => $quiz->getId(),
             ]);
         }
@@ -63,7 +66,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/update/quiz/{id}', name: 'update_quiz')]
+    #[Route('/update/{id}', name: 'update_quiz')]
     public function update(int $id, Request $request): Response
     {
         $quiz = $this->quizRepository->findQuizById($id);
@@ -87,7 +90,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/quiz/{id}', name: 'delete_quiz')]
+    #[Route('/delete/{id}', name: 'delete_quiz')]
     public function delete(int $id): Response
     {
         $quiz = $this->quizRepository->findQuizById($id);

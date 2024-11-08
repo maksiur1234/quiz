@@ -11,7 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/question', name: 'question_')]
+#[IsGranted('ROLE_USER')]
 class QuestionController extends AbstractController
 {
     private $questionRepository;
@@ -21,7 +24,7 @@ class QuestionController extends AbstractController
         $this->questionRepository = $questionRepository;
         $this->entityManager = $entityManager;
     }
-    #[Route('/quiz/question/{quizId}', name: 'app_question')]
+    #[Route('/{quizId}', name: 'app_question')]
     public function getQuestionsForQuiz(int $quizId): Response
     {
        $questions = $this->questionRepository->getQuestionForQuiz($quizId, $this->entityManager);
@@ -31,7 +34,7 @@ class QuestionController extends AbstractController
         ]);
     }
 
-    #[Route('/create/{quizId}/question', name: 'create_question')]
+    #[Route('/create/{quizId}', name: 'create_question')]
     public function create(EntityManagerInterface $entityManager, Request $request, int $quizId): Response
     {
         $quiz = $entityManager->getRepository(Quiz::class)->find($quizId);
@@ -52,7 +55,7 @@ class QuestionController extends AbstractController
             $entityManager->persist($question);
             $entityManager->flush();
 
-            return $this->redirectToRoute('list_quiz');
+            return $this->redirectToRoute('quiz_quiz_list');
         }
 
         return $this->render('/question/create.html.twig', [
