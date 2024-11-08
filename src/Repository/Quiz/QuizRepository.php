@@ -25,13 +25,15 @@ class QuizRepository extends ServiceEntityRepository
 
     public function saveQuiz(Quiz $quiz): void
     {
-        $this->_em->persist($quiz);
-        $this->_em->flush();
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($quiz);
+        $entityManager->flush();
     }
 
     public function deleteQuiz(Quiz $quiz): void
     {
-        $this->_em->remove($quiz);
-        $this->_em->flush();
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($quiz);
+        $entityManager->flush();
     }
 }
