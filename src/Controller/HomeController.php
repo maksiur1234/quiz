@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class HomeController extends AbstractController
 {
 
-    #[Route('/')]
+    #[Route('/dashboard')]
     public function index(): Response
     {
         return $this->render('dashboard.html.twig', );
