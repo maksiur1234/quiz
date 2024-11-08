@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Question;
 
-use App\Repository\QuestionRepository;
+use App\Entity\Quiz\Quiz;
+use App\Repository\Question\QuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]

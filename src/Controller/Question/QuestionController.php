@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Question;
 
-use App\Entity\Question;
-use App\Entity\Quiz;
+use App\Entity\Question\Question;
+use App\Entity\Quiz\Quiz;
 use App\Form\Type\QuestionType;
+use App\Repository\Question\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,17 +14,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class QuestionController extends AbstractController
 {
-    #[Route('/quiz/question/{quizId}', name: 'app_question')]
-    public function getQuestionsForQuiz(int $quizId, EntityManagerInterface $entityManager): Response
+    private $questionRepository;
+    private $entityManager;
+    public function __construct(QuestionRepository $questionRepository, EntityManagerInterface $entityManager)
     {
-        $query = $entityManager->createQuery(
-            'SELECT q, qu
-            FROM App\Entity\Question q
-            INNER JOIN q.quiz qu
-            WHERE qu.id = :quizId'
-        )->setParameter('quizId', $quizId);
-
-        $questions = $query->getResult();
+        $this->questionRepository = $questionRepository;
+        $this->entityManager = $entityManager;
+    }
+    #[Route('/quiz/question/{quizId}', name: 'app_question')]
+    public function getQuestionsForQuiz(int $quizId): Response
+    {
+       $questions = $this->questionRepository->getQuestionForQuiz($quizId, $this->entityManager);
         
         return $this->render('question/index.html.twig', [
             'questions' => $questions

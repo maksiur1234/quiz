@@ -1,32 +1,36 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Quiz;
 
-use App\Entity\Question;
-use App\Entity\Quiz;
+use App\Entity\Quiz\Quiz;
 use App\Form\Type\QuizType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\Quiz\QuizRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class QuizController extends AbstractController
 {
-    #[Route('/quizes', name: 'list_quiz')]
-    public function index(EntityManagerInterface $entityManager): Response
+    private QuizRepository $quizRepository;
+
+    public function __construct(QuizRepository $quizRepository)
     {
-        $quizes = $entityManager->getRepository(Quiz::class)->findAll();
+        $this->quizRepository = $quizRepository;
+    }
+
+    #[Route('/quizes', name: 'list_quiz')]
+    public function index(): Response
+    {
+        $quizes = $this->quizRepository->findAllQuizes();
 
         return $this->render('quiz/index.html.twig', ['quizes' => $quizes]);
     }
 
     #[Route('/details/quiz/{id}', name: 'details_quiz')]
-    public function show(EntityManagerInterface $entityManager, int $id): Response
+    public function show(int $id): Response
     {
-        $quiz = $entityManager->getRepository(Quiz::class)->find($id);
+        $quiz = $this->quizRepository->findQuizById($id);
 
         if (!$quiz) {
             throw $this->createNotFoundException(
@@ -38,7 +42,7 @@ class QuizController extends AbstractController
     }
 
     #[Route('/create/quiz', name: 'create_quiz')]
-    public function create(EntityManagerInterface $entityManager, Request $request): Response
+    public function create(Request $request): Response
     {
         $quiz = new Quiz;
 
@@ -47,8 +51,7 @@ class QuizController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager->persist($quiz);
-            $entityManager->flush();
+            $this->quizRepository->saveQuiz($quiz);
 
             return $this->redirectToRoute('create_question', [
                 'quizId' => $quiz->getId(),
@@ -61,19 +64,20 @@ class QuizController extends AbstractController
     }
 
     #[Route('/update/quiz/{id}', name: 'update_quiz')]
-    public function update(int $id, EntityManagerInterface $entityManager, Request $request): Response
+    public function update(int $id, Request $request): Response
     {
-        $quiz = $entityManager->getRepository(Quiz::class)->find($id);
-        $quiz->getName();
-        $quiz->getDescription();
+        $quiz = $this->quizRepository->findQuizById($id);
+
+        if (!$quiz) {
+            throw $this->createNotFoundException('No quiz found for id: ' . $id);
+        }
 
         $form = $this->createForm(QuizType::class, $quiz);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager->persist($quiz);
-            $entityManager->flush();
+            $this->quizRepository->saveQuiz($quiz);
 
             return new Response('Updated quiz with name: ' . $quiz->getName() . ' and description: ' . $quiz->getDescription());
         }
@@ -84,9 +88,9 @@ class QuizController extends AbstractController
     }
 
     #[Route('/delete/quiz/{id}', name: 'delete_quiz')]
-    public function delete(EntityManagerInterface $entityManager, int $id): Response
+    public function delete(int $id): Response
     {
-        $quiz = $entityManager->getRepository(Quiz::class)->find($id);
+        $quiz = $this->quizRepository->findQuizById($id);
 
         if (!$quiz) {
             throw $this->createNotFoundException(
@@ -94,8 +98,7 @@ class QuizController extends AbstractController
             );
         }
 
-        $entityManager->remove($quiz);
-        $entityManager->flush();
+        $this->quizRepository->deleteQuiz($quiz);
 
         return new Response('Succesfully deleted quiz');
     }

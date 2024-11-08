@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Question;
 
-use App\Entity\Question;
+use App\Entity\Question\Question;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,4 +41,15 @@ class QuestionRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getQuestionForQuiz(int $quizId, EntityManager $entityManager): array
+    {
+        return $entityManager->createQuery(
+            'SELECT q, qu
+            FROM App\Entity\Question\Question q
+            INNER JOIN q.quiz qu
+            WHERE qu.id = :quizId'
+        )->setParameter('quizId', $quizId)
+            ->getResult();
+    }
 }
