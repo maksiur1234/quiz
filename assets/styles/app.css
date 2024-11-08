@@ -1,7 +1,3 @@
-body {
-    background-color: skyblue;
-}
-
-h2 {
-    color: red;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
