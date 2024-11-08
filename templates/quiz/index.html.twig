@@ -1,16 +1,35 @@
-<a href="/">Wróć do strony głównej</a>
-<h1>Lista quizów</h1>
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+{% endblock %}
+
+<a href="/" class="text-3xl text-blue-500 hover:text-blue-700 font-semibold text-center my-8">Wróć do strony głównej</a>
+
+<h1 class="text-3xl font-bold text-center my-8">Lista quizów</h1>
+
 {% if quizes %}
-{% for quiz in quizes %}
+    <div class="flex flex-wrap gap-6 justify-center">
+        {% for quiz in quizes %}
+            <div class="flex flex-col bg-white border p-6 rounded-lg shadow-lg w-full sm:w-80 hover:shadow-xl transition duration-300 ease-in-out">
+                <h2 class="text-2xl font-semibold text-blue-600">{{ quiz.name }}</h2>
+                <p class="text-gray-600 mt-2">{{ quiz.description }}</p>
 
-<div>
-    <a href="/quiz/details/{{quiz.id}}">
-        <h2>{{quiz.name}}</h2>
-        <p>{{quiz.description}}</p>
-        <a href="/quiz/delete/{{quiz.id}}">Usuń quiz</a>
-        <a href="/quiz/update/{{quiz.id}}">Edytuj quiz</a>
-    </a>
-</div>
-
-{% endfor %}
+                <div class="space-y-4 mt-4">
+                    <a href="/quiz/delete/{{ quiz.id }}" 
+                       class="inline-block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300 ease-in-out">
+                        Usuń quiz
+                    </a>
+                    <a href="/quiz/update/{{ quiz.id }}" 
+                       class="inline-block bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition duration-300 ease-in-out">
+                        Edytuj quiz
+                    </a>
+                    <a href="/quiz/details/{{ quiz.id }}" 
+                       class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out">
+                        Przejdź do quizu
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-center text-gray-600">Brak dostępnych quizów.</p>
 {% endif %}
